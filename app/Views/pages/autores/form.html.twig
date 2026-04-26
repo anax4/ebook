@@ -1,0 +1,62 @@
+{% extends "templates/base.html.twig" %}
+
+{% block title %}{{ title }} - E-book{% endblock %}
+
+{% block content %}
+<section class="animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel">
+    <div class="border-b border-secondary/10 px-5 py-5 sm:px-6">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Formulário</p>
+        <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
+    </div>
+
+    {% if errors is defined and errors is not empty %}
+    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-6">
+        <ul class="list-inside list-disc space-y-1 text-sm text-danger">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:p-6">
+        <div>
+            <label for="nome" class="mb-2 block text-sm font-semibold text-ink">
+                Nome do autor <span class="text-danger">*</span>
+            </label>
+            <input
+                type="text"
+                id="nome"
+                name="nome"
+                value="{{ autor.nome|default('') }}"
+                maxlength="40"
+                required
+                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                placeholder="Digite o nome do autor"
+            >
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <button type="submit" class="inline-flex flex-1 items-center justify-center rounded-full bg-[#b93e0d] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
+                Salvar autor
+            </button>
+            <a href="/" class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
+                Voltar
+            </a>
+        </div>
+    </form>
+
+    <div class="border-t border-secondary/10 px-5 py-5 sm:px-6">
+        <h2 class="font-display text-2xl text-ink">Autores cadastrados</h2>
+        {% if autores is empty %}
+        <p class="mt-2 text-sm text-secondary">Nenhum autor cadastrado ainda.</p>
+        {% else %}
+        <ul class="mt-4 grid gap-3">
+            {% for autor in autores %}
+            <li class="rounded-2xl border border-primary/15 bg-white/85 px-4 py-3 text-sm text-ink">{{ autor.nome }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

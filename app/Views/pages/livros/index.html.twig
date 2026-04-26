@@ -1,0 +1,67 @@
+{% extends "templates/base.html.twig" %}
+
+{% block title %}Catálogo - E-book{% endblock %}
+
+{% block content %}
+<section class="mb-6 animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel">
+    <div class="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-4 sm:p-6">
+        <a href="/autores/cadastrar" class="group rounded-[1.75rem] border border-primary/15 bg-white/85 p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-panel">
+            <p class="font-display text-2xl text-ink">Cadastrar autor</p>
+        </a>
+
+        <a href="/livros/cadastrar" class="group rounded-[1.75rem] bg-primary p-5 text-left text-white shadow-lg shadow-primary/25 transition hover:-translate-y-1 hover:bg-[#b93e0d]">
+            <p class="font-display text-2xl">Cadastrar livro</p>
+        </a>
+
+        <a href="/assuntos/cadastrar" class="group rounded-[1.75rem] border border-primary/15 bg-white/85 p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-panel">
+            <p class="font-display text-2xl text-ink">Cadastrar assunto</p>
+        </a>
+
+        <button type="button" class="group rounded-[1.75rem] border border-primary/15 bg-white/85 p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-panel">
+            <p class="font-display text-2xl text-ink">Relatórios</p>
+        </button>
+    </div>
+</section>
+
+<section class="animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel" style="animation-delay: 120ms;">
+    <div class="border-b border-secondary/10 px-5 py-5 sm:px-6">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Catálogo</p>
+        <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">Livros cadastrados</h1>
+    </div>
+
+    {% if livros is empty %}
+    <div class="p-8 text-center sm:p-12">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-16 w-16 text-primary/35" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <p class="text-lg font-medium text-ink">Nenhum livro cadastrado ainda.</p>
+        <p class="mt-1 text-sm text-secondary">Cadastre autores e assuntos, depois vincule tudo no cadastro do livro.</p>
+    </div>
+    {% else %}
+    <ul class="grid gap-4 p-5 sm:p-6">
+        {% for livro in livros %}
+        <li class="rounded-[1.5rem] border border-primary/15 bg-white/85 p-5 shadow-sm">
+            <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-secondary">Livro #{{ livro.id }}</p>
+                    <h2 class="mt-2 font-display text-2xl text-ink">{{ livro.titulo }}</h2>
+                    <p class="mt-2 text-sm text-secondary">{{ livro.editora }} • {{ livro.edicao }}ª edição • {{ livro.anoPublicacao }}</p>
+                    <p class="mt-2 text-sm font-semibold text-primary">R$ {{ livro.valor|number_format(2, ',', '.') }}</p>
+                </div>
+                <div class="flex flex-col gap-3 sm:flex-row">
+                    <a href="/livros/editar/{{ livro.id }}" class="inline-flex items-center justify-center rounded-full bg-[#b93e0d] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
+                        Editar
+                    </a>
+                    <form action="/livros/excluir/{{ livro.id }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este livro?');">
+                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-full border border-danger/20 bg-danger/5 px-5 py-3 text-sm font-semibold text-danger transition hover:bg-danger hover:text-white">
+                            Excluir
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+{% endblock %}

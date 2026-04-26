@@ -76,13 +76,14 @@ class Database
 
     private function createTables(): void
     {
-        $sql = sprintf(
+        $livrosSql = sprintf(
             "CREATE TABLE IF NOT EXISTS livros (
                 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 titulo VARCHAR(40) NOT NULL,
                 editora VARCHAR(40) NOT NULL,
                 edicao INT NOT NULL,
                 anoPublicacao VARCHAR(4) NOT NULL,
+                valor DECIMAL(10,2) NOT NULL DEFAULT 0.00,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=%s COLLATE=%s",
@@ -90,6 +91,70 @@ class Database
             $this->config['collation']
         );
 
-        $this->pdo->exec($sql);
+        $autoresSql = sprintf(
+            "CREATE TABLE IF NOT EXISTS autores (
+                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(40) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=%s COLLATE=%s",
+            $this->config['charset'],
+            $this->config['collation']
+        );
+
+        $assuntosSql = sprintf(
+            "CREATE TABLE IF NOT EXISTS assuntos (
+                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                descricao VARCHAR(20) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=%s COLLATE=%s",
+            $this->config['charset'],
+            $this->config['collation']
+        );
+
+        $livroAutorSql = "CREATE TABLE IF NOT EXISTS livro_autor (
+            livro_id INT UNSIGNED NOT NULL,
+            autor_id INT UNSIGNED NOT NULL,
+            PRIMARY KEY (livro_id, autor_id),
+            CONSTRAINT fk_livro_autor_livro FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
+            CONSTRAINT fk_livro_autor_autor FOREIGN KEY (autor_id) REFERENCES autores(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB";
+
+        $livroAssuntoSql = "CREATE TABLE IF NOT EXISTS livro_assunto (
+            livro_id INT UNSIGNED NOT NULL,
+            assunto_id INT UNSIGNED NOT NULL,
+            PRIMARY KEY (livro_id, assunto_id),
+            CONSTRAINT fk_livro_assunto_livro FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
+            CONSTRAINT fk_livro_assunto_assunto FOREIGN KEY (assunto_id) REFERENCES assuntos(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB";
+
+        $this->pdo->exec($livrosSql);
+        $this->pdo->exec($autoresSql);
+        $this->pdo->exec($assuntosSql);
+        $this->ensureColumnExists(
+            'livros',
+            'valor',
+            'ALTER TABLE livros ADD COLUMN valor DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER anoPublicacao'
+        );
+        $this->pdo->exec($livroAutorSql);
+        $this->pdo->exec($livroAssuntoSql);
+    }
+
+    private function ensureColumnExists(string $table, string $column, string $alterSql): void
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = :database AND TABLE_NAME = :table AND COLUMN_NAME = :column'
+        );
+
+        $stmt->execute([
+            'database' => $this->config['database'],
+            'table' => $table,
+            'column' => $column,
+        ]);
+
+        if ((int) $stmt->fetchColumn() === 0) {
+            $this->pdo->exec($alterSql);
+        }
     }
 }

@@ -1,0 +1,177 @@
+{% extends "templates/base.html.twig" %}
+
+{% block title %}{{ title }} - E-book{% endblock %}
+
+{% block content %}
+<section class="animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel">
+    <div class="border-b border-secondary/10 px-5 py-5 sm:px-6">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Formulário</p>
+        <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
+    </div>
+
+    {% if errors is defined and errors is not empty %}
+    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-6">
+        <div class="mb-2 flex items-center gap-2 font-medium text-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Por favor, corrija os erros:
+        </div>
+        <ul class="list-inside list-disc space-y-1 text-sm text-danger">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:grid-cols-2 sm:p-6">
+        <div class="sm:col-span-2">
+            <label for="titulo" class="mb-2 block text-sm font-semibold text-ink">
+                Título <span class="text-danger">*</span>
+            </label>
+            <input
+                type="text"
+                id="titulo"
+                name="titulo"
+                value="{{ livro.titulo|default('') }}"
+                maxlength="40"
+                required
+                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                placeholder="Digite o título do livro"
+            >
+            <p class="mt-2 text-xs text-secondary">Máximo de 40 caracteres</p>
+        </div>
+
+        <div class="sm:col-span-2">
+            <label for="editora" class="mb-2 block text-sm font-semibold text-ink">
+                Editora <span class="text-danger">*</span>
+            </label>
+            <input
+                type="text"
+                id="editora"
+                name="editora"
+                value="{{ livro.editora|default('') }}"
+                maxlength="40"
+                required
+                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                placeholder="Digite o nome da editora"
+            >
+            <p class="mt-2 text-xs text-secondary">Máximo de 40 caracteres</p>
+        </div>
+
+        <div>
+            <label for="edicao" class="mb-2 block text-sm font-semibold text-ink">
+                Edição <span class="text-danger">*</span>
+            </label>
+            <input
+                type="number"
+                id="edicao"
+                name="edicao"
+                value="{{ livro.edicao|default('') }}"
+                min="1"
+                required
+                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                placeholder="1"
+            >
+        </div>
+
+        <div>
+            <label for="anoPublicacao" class="mb-2 block text-sm font-semibold text-ink">
+                Ano de publicação <span class="text-danger">*</span>
+            </label>
+            <input
+                type="text"
+                id="anoPublicacao"
+                name="anoPublicacao"
+                value="{{ livro.anoPublicacao|default('') }}"
+                maxlength="4"
+                pattern="\d{4}"
+                required
+                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                placeholder="2024"
+            >
+        </div>
+
+        <div class="sm:col-span-2">
+            <label for="valor" class="mb-2 block text-sm font-semibold text-ink">
+                Valor do livro <span class="text-danger">*</span>
+            </label>
+            <input
+                type="number"
+                id="valor"
+                name="valor"
+                value="{{ livro.valor|default('') }}"
+                min="0"
+                step="0.01"
+                required
+                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                placeholder="59.90"
+            >
+        </div>
+
+        <div>
+            <p class="mb-3 block text-sm font-semibold text-ink">Autores <span class="text-danger">*</span></p>
+            {% if autores is empty %}
+            <div class="rounded-2xl border border-dashed border-secondary/25 bg-white/70 px-4 py-4 text-sm text-secondary">
+                Nenhum autor cadastrado. <a href="/autores/cadastrar" class="font-semibold text-primary">Cadastre um autor primeiro.</a>
+            </div>
+            {% else %}
+            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-white/80 p-4">
+                {% for autor in autores %}
+                <label class="flex items-center gap-3 text-sm text-ink">
+                    <input
+                        type="checkbox"
+                        name="autor_ids[]"
+                        value="{{ autor.id }}"
+                        {% if autor.id in selectedAutores %}checked{% endif %}
+                        class="h-4 w-4 rounded border-secondary/30 text-primary focus:ring-primary/30"
+                    >
+                    <span>{{ autor.nome }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <p class="mb-3 block text-sm font-semibold text-ink">Assuntos <span class="text-danger">*</span></p>
+            {% if assuntos is empty %}
+            <div class="rounded-2xl border border-dashed border-secondary/25 bg-white/70 px-4 py-4 text-sm text-secondary">
+                Nenhum assunto cadastrado. <a href="/assuntos/cadastrar" class="font-semibold text-primary">Cadastre um assunto primeiro.</a>
+            </div>
+            {% else %}
+            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-white/80 p-4">
+                {% for assunto in assuntos %}
+                <label class="flex items-center gap-3 text-sm text-ink">
+                    <input
+                        type="checkbox"
+                        name="assunto_ids[]"
+                        value="{{ assunto.id }}"
+                        {% if assunto.id in selectedAssuntos %}checked{% endif %}
+                        class="h-4 w-4 rounded border-secondary/30 text-primary focus:ring-primary/30"
+                    >
+                    <span>{{ assunto.descricao }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="sm:col-span-2 flex flex-col gap-3 pt-2 sm:flex-row">
+            <button
+                type="submit"
+                class="inline-flex flex-1 items-center justify-center rounded-full bg-[#b93e0d] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[rgba(185,62,13,0.28)] transition hover:-translate-y-0.5 hover:bg-[#9c330b]"
+            >
+                {% if livro %}Atualizar{% else %}Salvar{% endif %}
+            </button>
+            <a
+                href="/"
+                class="inline-flex flex-1 items-center justify-center rounded-full bg-[#b93e0d] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[rgba(185,62,13,0.22)] transition hover:-translate-y-0.5 hover:bg-[#9c330b]"
+            >
+                Cancelar
+            </a>
+        </div>
+    </form>
+</section>
+{% endblock %}
