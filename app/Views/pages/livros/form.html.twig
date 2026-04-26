@@ -1,16 +1,16 @@
 {% extends "templates/base.html.twig" %}
 
 {% block title %}{{ title }} - E-book{% endblock %}
-
+{# TODO - trocar a cor de fundo da pagina #}
 {% block content %}
-<section class="animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel">
-    <div class="border-b border-secondary/10 px-5 py-5 sm:px-6">
+<section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/10 bg-white shadow-panel">
+    <div class="border-b border-secondary/10 px-5 py-5 sm:px-8">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Formulário</p>
         <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
     </div>
 
     {% if errors is defined and errors is not empty %}
-    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-6">
+    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-8">
         <div class="mb-2 flex items-center gap-2 font-medium text-danger">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -25,7 +25,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:grid-cols-2 sm:p-6">
+    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
         <div class="sm:col-span-2">
             <label for="titulo" class="mb-2 block text-sm font-semibold text-ink">
                 Título <span class="text-danger">*</span>
@@ -37,7 +37,7 @@
                 value="{{ livro.titulo|default('') }}"
                 maxlength="40"
                 required
-                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
                 placeholder="Digite o título do livro"
             >
             <p class="mt-2 text-xs text-secondary">Máximo de 40 caracteres</p>
@@ -54,7 +54,7 @@
                 value="{{ livro.editora|default('') }}"
                 maxlength="40"
                 required
-                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
                 placeholder="Digite o nome da editora"
             >
             <p class="mt-2 text-xs text-secondary">Máximo de 40 caracteres</p>
@@ -71,7 +71,7 @@
                 value="{{ livro.edicao|default('') }}"
                 min="1"
                 required
-                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
                 placeholder="1"
             >
         </div>
@@ -88,7 +88,7 @@
                 maxlength="4"
                 pattern="\d{4}"
                 required
-                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
                 placeholder="2024"
             >
         </div>
@@ -105,19 +105,19 @@
                 min="0"
                 step="0.01"
                 required
-                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
-                placeholder="59.90"
+                class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                placeholder="59,90"
             >
         </div>
 
         <div>
             <p class="mb-3 block text-sm font-semibold text-ink">Autores <span class="text-danger">*</span></p>
             {% if autores is empty %}
-            <div class="rounded-2xl border border-dashed border-secondary/25 bg-white/70 px-4 py-4 text-sm text-secondary">
+            <div class="rounded-2xl border border-dashed border-secondary/25 bg-ember px-4 py-4 text-sm text-secondary">
                 Nenhum autor cadastrado. <a href="/autores/cadastrar" class="font-semibold text-primary">Cadastre um autor primeiro.</a>
             </div>
             {% else %}
-            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-white/80 p-4">
+            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-ember/45 p-4">
                 {% for autor in autores %}
                 <label class="flex items-center gap-3 text-sm text-ink">
                     <input
@@ -137,11 +137,11 @@
         <div>
             <p class="mb-3 block text-sm font-semibold text-ink">Assuntos <span class="text-danger">*</span></p>
             {% if assuntos is empty %}
-            <div class="rounded-2xl border border-dashed border-secondary/25 bg-white/70 px-4 py-4 text-sm text-secondary">
+            <div class="rounded-2xl border border-dashed border-secondary/25 bg-ember px-4 py-4 text-sm text-secondary">
                 Nenhum assunto cadastrado. <a href="/assuntos/cadastrar" class="font-semibold text-primary">Cadastre um assunto primeiro.</a>
             </div>
             {% else %}
-            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-white/80 p-4">
+            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-ember/45 p-4">
                 {% for assunto in assuntos %}
                 <label class="flex items-center gap-3 text-sm text-ink">
                     <input
@@ -167,7 +167,7 @@
             </button>
             <a
                 href="/"
-                class="inline-flex flex-1 items-center justify-center rounded-full bg-[#b93e0d] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[rgba(185,62,13,0.22)] transition hover:-translate-y-0.5 hover:bg-[#9c330b]"
+                class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 bg-white px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]"
             >
                 Cancelar
             </a>

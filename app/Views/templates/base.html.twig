@@ -24,10 +24,11 @@
                 </a>
 
                 <nav class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                    <a href="/" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
+                    <a href="/" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold
+                                        text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
                         Catálogo
                     </a>
-                    <a href="/autores/cadastrar" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
+                    {# <a href="/autores/cadastrar" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
                         Cadastrar autor
                     </a>
                     <a href="/assuntos/cadastrar" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
@@ -35,19 +36,18 @@
                     </a>
                     <a href="/livros/cadastrar" class="inline-flex items-center justify-center rounded-full bg-[#d9480f] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#b93e0d]">
                         Cadastrar livro
-                    </a>
+                    </a> #}
                 </nav>
             </div>
         </header>
 
-        <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <main class="mx-auto w-full max-w-6xl flex-1 bg-clay px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
             {% block content %}{% endblock %}
         </main>
 
         <footer class="mt-auto border-t border-secondary/15 bg-white py-6">
             <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 text-sm text-secondary sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
                 <p>&copy; {{ "now"|date("Y") }} E-book. Sistema de cadastro de livros.</p>
-                <p>Projeto MVC com Twig e Tailwind.</p>
             </div>
         </footer>
     </div>
