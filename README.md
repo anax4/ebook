@@ -70,14 +70,12 @@ composer.json
 
 
 ## Rotas
-
 - `GET /`
 - `GET /livros/cadastrar`
 - `POST /livros`
 - `GET /livros/editar/{id}`
 - `POST /livros/atualizar/{id}`
 - `POST /livros/excluir/{id}`
+- `GET /relatorios`
 
 ## Observacoes
-
-

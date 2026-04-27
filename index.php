@@ -30,5 +30,6 @@ $router->get('/livros/editar/{id}', 'LivroController@edit');
 $router->post('/livros/atualizar/{id}', 'LivroController@update');
 $router->post('/livros/excluir/{id}', 'LivroController@destroy');
 $router->get('/relatorios', 'RelatorioController@index');
+$router->get('/api/relatorio-livros', 'RelatorioLivrosApiController@index');
 
 $router->dispatch();
