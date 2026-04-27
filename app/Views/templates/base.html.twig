@@ -24,6 +24,8 @@
                 </a>
 
                 <nav class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                    {# TODO - mudar para um menu hamburguer quando for para mobile e facilitar o ux enquanto tiver em outras paginas 
+                    e voltar p menu dos cards #}
                     <a href="/" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold
                                         text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
                         Catálogo
@@ -51,5 +53,6 @@
             </div>
         </footer>
     </div>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

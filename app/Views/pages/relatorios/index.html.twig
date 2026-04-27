@@ -3,80 +3,85 @@
 {% block title %}{{ title }} - E-book{% endblock %}
 
 {% block content %}
-<section class="mb-6 animate-rise rounded-[2rem] border border-secondary/15 bg-white shadow-panel">
+<section class="mb-6 rounded-3xl border border-secondary/15 bg-white shadow-panel">
     <div class="border-b border-secondary/10 px-5 py-5 sm:px-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Relatório</p>
-        <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
+        <h1 class="font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
     </div>
 
-    <div class="grid gap-4 border-b border-secondary/10 px-5 py-5 sm:grid-cols-2 sm:px-8">
-        <article class="rounded-[1.5rem] border border-secondary/15 bg-sand/80 p-5">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Autores</p>
-            <p class="mt-2 font-display text-3xl text-ink">{{ totais.autores }}</p>
-        </article>
+    <div class="border-b border-secondary/10 px-5 py-5 sm:px-8">
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <label class="block">
+                <span class="mb-2 block text-sm font-medium text-secondary">Busca</span>
+                <input
+                    id="report-search"
+                    type="text"
+                    class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    placeholder="Titulo, autor ou assunto"
+                >
+                <span id="report-search-error" class="mt-2 hidden text-sm text-danger"></span>
+            </label>
 
-        <article class="rounded-[1.5rem] border border-secondary/15 bg-sand/80 p-5">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Livros</p>
-            <p class="mt-2 font-display text-3xl text-ink">{{ totais.livros }}</p>
-        </article>
+            <label class="block">
+                <span class="mb-2 block text-sm font-medium text-secondary">Autor</span>
+                <select id="report-author" class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10">
+                    <option value="">Todos os autores</option>
+                </select>
+                <span id="report-author-error" class="mt-2 hidden text-sm text-danger"></span>
+            </label>
+
+            <label class="block">
+                <span class="mb-2 block text-sm font-medium text-secondary">Ano</span>
+                <select id="report-year" class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10">
+                    <option value="">Todos os anos</option>
+                </select>
+                <span id="report-year-error" class="mt-2 hidden text-sm text-danger"></span>
+            </label>
+
+            <label class="block">
+                <span class="mb-2 block text-sm font-medium text-secondary">Ordenação</span>
+                <select id="report-sort" class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10">
+                    <option value="title">Título A-Z</option>
+                    <option value="year">Ano mais recente</option>
+                    <option value="value">Maior valor</option>
+                </select>
+                <span id="report-sort-error" class="mt-2 hidden text-sm text-danger"></span>
+            </label>
+        </div>
+
+        <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <button id="report-clear" type="button" class="inline-flex items-center justify-center rounded-full border border-secondary/20 bg-white px-5 py-3 text-sm font-semibold text-secondary transition hover:border-primary hover:text-primary">
+                Limpar filtros
+            </button>
+            <button id="report-reload" type="button" class="inline-flex items-center justify-center rounded-full border border-secondary/20 bg-white px-5 py-3 text-sm font-semibold text-secondary transition hover:border-primary hover:text-primary">
+                Atualizar relatório
+            </button>
+            <button id="report-export" type="button" class="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover">
+                Exportar CSV
+            </button>
+            <button id="report-print" type="button" class="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover">
+                Imprimir
+            </button>
+        </div>
     </div>
 
-    {% if grupos is empty %}
-    <div class="p-8 text-center sm:p-12">
-        <p class="text-lg font-medium text-ink">Nenhum registro disponível para o relatório.</p>
+    <div class="p-5 sm:p-8">
+        <div class="mb-4 text-sm text-secondary">
+            <span id="report-status">Aguardando carregamento do relatorio.</span>
+            <span class="mx-2">|</span>
+            <span>Total de autores: <strong id="report-total">0</strong></span>
+        </div>
+        <div id="report-error" class="hidden rounded-[1.5rem] border border-danger/20 bg-danger/5 p-5 text-sm text-danger"></div>
+        <div id="report-empty" class="hidden rounded-[1.5rem] border border-secondary/15 bg-sand/55 p-5 text-sm text-secondary">
+            Nenhum resultado encontrado para os filtros informados.
+        </div>
+        <div id="report-loading" class="hidden rounded-[1.5rem] border border-secondary/15 bg-sand/55 p-5 text-sm text-secondary">
+            Carregando relatorio...
+        </div>
+        <div id="report-groups" class="space-y-6"></div>
     </div>
-    {% else %}
-    <div class="grid gap-6 p-5 sm:p-8">
-        {% for grupo in grupos %}
-        <article class="rounded-[1.75rem] border border-secondary/15 bg-sand/55 p-5 shadow-sm">
-            <div class="flex flex-col gap-3 border-b border-secondary/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-secondary">Autor</p>
-                    <h2 class="mt-2 font-display text-2xl text-ink">{{ grupo.autor_nome }}</h2>
-                </div>
-                <p class="text-sm font-medium text-secondary">{{ grupo.livros|length }} livro{% if grupo.livros|length > 1 %}s{% endif %} no grupo</p>
-            </div>
-
-            <ul class="mt-5 grid gap-4">
-                {% for livro in grupo.livros %}
-                <li class="rounded-[1.5rem] border border-primary/10 bg-white p-5">
-                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Livro #{{ livro.livro_id }}</p>
-                            <h3 class="mt-2 font-display text-2xl text-ink">{{ livro.titulo }}</h3>
-                            <p class="mt-2 text-sm text-secondary">
-                                {{ livro.editora }} • {{ livro.edicao }}ª edição • {{ livro.anoPublicacao }}
-                            </p>
-                            <p class="mt-2 text-sm font-semibold text-primary">R$ {{ livro.valor|number_format(2, ',', '.') }}</p>
-                        </div>
-
-                        <a href="/livros/editar/{{ livro.livro_id }}" class="inline-flex items-center justify-center rounded-full bg-[#b93e0d] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
-                            Abrir cadastro
-                        </a>
-                    </div>
-
-                    <dl class="mt-5 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-2xl border border-secondary/10 bg-ember/35 p-4">
-                            <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Autores do livro</dt>
-                            <dd class="mt-2 text-sm text-ink">{{ livro.autores_livro }}</dd>
-                        </div>
-                        <div class="rounded-2xl border border-secondary/10 bg-ember/35 p-4">
-                            <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Assuntos do livro</dt>
-                            <dd class="mt-2 text-sm text-ink">
-                                {% if livro.assuntos_livro %}
-                                    {{ livro.assuntos_livro }}
-                                {% else %}
-                                    Nenhum assunto vinculado.
-                                {% endif %}
-                            </dd>
-                        </div>
-                    </dl>
-                </li>
-                {% endfor %}
-            </ul>
-        </article>
-        {% endfor %}
-    </div>
-    {% endif %}
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('assets/js/report-viewer.js') }}" defer></script>
 {% endblock %}
