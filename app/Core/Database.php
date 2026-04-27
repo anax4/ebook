@@ -105,7 +105,7 @@ class Database
         $assuntosSql = sprintf(
             "CREATE TABLE IF NOT EXISTS assuntos (
                 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                descricao VARCHAR(20) NOT NULL,
+                descricao VARCHAR(30) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=%s COLLATE=%s",
