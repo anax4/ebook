@@ -118,7 +118,7 @@ class Database
             autor_id INT UNSIGNED NOT NULL,
             PRIMARY KEY (livro_id, autor_id),
             CONSTRAINT fk_livro_autor_livro FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
-            CONSTRAINT fk_livro_autor_autor FOREIGN KEY (autor_id) REFERENCES autores(id) ON DELETE CASCADE
+            CONSTRAINT fk_livro_autor_autor FOREIGN KEY (autor_id) REFERENCES autores(id) ON DELETE RESTRICT
         ) ENGINE=InnoDB";
 
         $livroAssuntoSql = "CREATE TABLE IF NOT EXISTS livro_assunto (
@@ -126,7 +126,7 @@ class Database
             assunto_id INT UNSIGNED NOT NULL,
             PRIMARY KEY (livro_id, assunto_id),
             CONSTRAINT fk_livro_assunto_livro FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
-            CONSTRAINT fk_livro_assunto_assunto FOREIGN KEY (assunto_id) REFERENCES assuntos(id) ON DELETE CASCADE
+            CONSTRAINT fk_livro_assunto_assunto FOREIGN KEY (assunto_id) REFERENCES assuntos(id) ON DELETE RESTRICT
         ) ENGINE=InnoDB";
 
         $this->pdo->exec($livrosSql);
@@ -139,6 +139,22 @@ class Database
         );
         $this->pdo->exec($livroAutorSql);
         $this->pdo->exec($livroAssuntoSql);
+        $this->ensureForeignKeyDeleteRule(
+            'fk_livro_autor_autor',
+            'livro_autor',
+            'autor_id',
+            'autores',
+            'id',
+            'RESTRICT'
+        );
+        $this->ensureForeignKeyDeleteRule(
+            'fk_livro_assunto_assunto',
+            'livro_assunto',
+            'assunto_id',
+            'assuntos',
+            'id',
+            'RESTRICT'
+        );
     }
 
     private function ensureColumnExists(string $table, string $column, string $alterSql): void
@@ -156,5 +172,46 @@ class Database
         if ((int) $stmt->fetchColumn() === 0) {
             $this->pdo->exec($alterSql);
         }
+    }
+
+    private function ensureForeignKeyDeleteRule(
+        string $constraintName,
+        string $table,
+        string $column,
+        string $referencedTable,
+        string $referencedColumn,
+        string $deleteRule
+    ): void {
+        $stmt = $this->pdo->prepare(
+            'SELECT DELETE_RULE FROM information_schema.REFERENTIAL_CONSTRAINTS
+             WHERE CONSTRAINT_SCHEMA = :database AND CONSTRAINT_NAME = :constraint'
+        );
+
+        $stmt->execute([
+            'database' => $this->config['database'],
+            'constraint' => $constraintName,
+        ]);
+
+        $currentRule = $stmt->fetchColumn();
+
+        if ($currentRule !== false && in_array(strtoupper($currentRule), ['RESTRICT', 'NO ACTION'], true)) {
+            return;
+        }
+
+        if ($currentRule !== false) {
+            $this->pdo->exec(sprintf('ALTER TABLE %s DROP FOREIGN KEY %s', $table, $constraintName));
+        }
+
+        $this->pdo->exec(
+            sprintf(
+                'ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s(%s) ON DELETE %s',
+                $table,
+                $constraintName,
+                $column,
+                $referencedTable,
+                $referencedColumn,
+                $deleteRule
+            )
+        );
     }
 }

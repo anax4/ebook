@@ -10,7 +10,13 @@ class Assunto extends Model
 
     public function getAll()
     {
-        $stmt = $this->db->query('SELECT * FROM assuntos ORDER BY descricao ASC');
+        $stmt = $this->db->query(
+            'SELECT assuntos.*, COUNT(DISTINCT livro_assunto.livro_id) AS total_livros_relacionados
+             FROM assuntos
+             LEFT JOIN livro_assunto ON livro_assunto.assunto_id = assuntos.id
+             GROUP BY assuntos.id, assuntos.descricao, assuntos.created_at, assuntos.updated_at
+             ORDER BY assuntos.descricao ASC'
+        );
 
         return $stmt->fetchAll();
     }
@@ -29,8 +35,27 @@ class Assunto extends Model
         return $this->create($data);
     }
 
+    public function getRelatedBookCount(int $id): int
+    {
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(DISTINCT livro_id) FROM livro_assunto WHERE assunto_id = :assunto_id'
+        );
+        $stmt->execute(['assunto_id' => $id]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function hasRelatedBooks(int $id): bool
+    {
+        return $this->getRelatedBookCount($id) > 0;
+    }
+
     public function remove($id)
     {
+        if ($this->hasRelatedBooks((int) $id)) {
+            throw new \DomainException('Nao e possivel excluir este assunto porque existem livros relacionados.');
+        }
+
         return $this->delete($id);
     }
 }

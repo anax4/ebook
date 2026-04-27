@@ -18,6 +18,14 @@ class Livro extends Model
         return $this->find($id);
     }
 
+    public function save($data){
+        if (isset($data['id'])) {
+            return $this->update($data['id'], $data);
+        }
+
+        return $this->create($data);
+    }
+
     public function getAutorIds($livroId): array
     {
         $stmt = $this->db->prepare('SELECT autor_id FROM livro_autor WHERE livro_id = :livro_id ORDER BY autor_id');

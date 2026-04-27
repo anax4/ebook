@@ -3,14 +3,14 @@
 {% block title %}{{ title }} - E-book{% endblock %}
 
 {% block content %}
-<section class="animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel">
-    <div class="border-b border-secondary/10 px-5 py-5 sm:px-6">
+<section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/15 bg-white shadow-panel">
+    <div class="border-b border-secondary/10 px-5 py-5 sm:px-8">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Formulário</p>
         <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
     </div>
 
     {% if errors is defined and errors is not empty %}
-    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-6">
+    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-8">
         <ul class="list-inside list-disc space-y-1 text-sm text-danger">
             {% for error in errors %}
             <li>{{ error }}</li>
@@ -19,7 +19,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:p-6">
+    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:p-8">
         <div>
             <label for="nome" class="mb-2 block text-sm font-semibold text-ink">
                 Nome do autor <span class="text-danger">*</span>
@@ -31,29 +31,60 @@
                 value="{{ autor.nome|default('') }}"
                 maxlength="40"
                 required
-                class="w-full rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
                 placeholder="Digite o nome do autor"
             >
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row">
             <button type="submit" class="inline-flex flex-1 items-center justify-center rounded-full bg-[#b93e0d] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
-                Salvar autor
+                {% if autor and autor.id is defined %}Atualizar autor{% else %}Salvar autor{% endif %}
             </button>
-            <a href="/" class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
+            <a href="/" class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 bg-white px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
                 Voltar
             </a>
         </div>
     </form>
 
-    <div class="border-t border-secondary/10 px-5 py-5 sm:px-6">
+    <div class="border-t border-secondary/10 px-5 py-5 sm:px-8">
         <h2 class="font-display text-2xl text-ink">Autores cadastrados</h2>
         {% if autores is empty %}
         <p class="mt-2 text-sm text-secondary">Nenhum autor cadastrado ainda.</p>
         {% else %}
         <ul class="mt-4 grid gap-3">
-            {% for autor in autores %}
-            <li class="rounded-2xl border border-primary/15 bg-white/85 px-4 py-3 text-sm text-ink">{{ autor.nome }}</li>
+            {% for item in autores %}
+            {% set totalLivrosRelacionados = item.total_livros_relacionados|default(0) %}
+            <li class="flex flex-col gap-3 rounded-2xl border border-primary/15 bg-ember/35 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm font-medium text-ink">{{ item.nome }}</p>
+                    {% if totalLivrosRelacionados > 0 %}
+                    <p class="mt-1 text-xs text-secondary">
+                        Vinculado a {{ totalLivrosRelacionados }} livro{% if totalLivrosRelacionados > 1 %}s{% endif %}.
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="flex flex-col gap-3 sm:flex-row">
+                    <a href="/autores/editar/{{ item.id }}" class="inline-flex items-center justify-center rounded-full bg-[#b93e0d] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
+                        Editar
+                    </a>
+                    {% if totalLivrosRelacionados > 0 %}
+                    <button
+                        type="button"
+                        disabled
+                        title="Este autor possui livros relacionados e nao pode ser excluido."
+                        class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-full border border-secondary/15 bg-secondary/10 px-5 py-2.5 text-sm font-semibold text-secondary/70 opacity-80"
+                    >
+                        Excluir
+                    </button>
+                    {% else %}
+                    <form action="/autores/excluir/{{ item.id }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este autor?');">
+                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-full border border-danger/20 bg-danger/5 px-5 py-2.5 text-sm font-semibold text-danger transition hover:bg-danger hover:text-white">
+                            Excluir
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </li>
             {% endfor %}
         </ul>
         {% endif %}

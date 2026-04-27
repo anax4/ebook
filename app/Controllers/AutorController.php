@@ -17,40 +17,104 @@ class AutorController extends Controller
 
     public function create()
     {
-        $this->view('pages/autores/form.html.twig', [
-            'title' => 'Cadastrar Autor',
-            'action' => '/autores',
-            'autores' => $this->autor->getAll(),
-            'autor' => null,
-        ]);
+        $this->renderForm('Cadastrar Autor', '/autores', null);
     }
 
     public function store()
     {
-        $data = [
-            'nome' => trim($_POST['nome'] ?? ''),
-        ];
-
-        $errors = [];
-
-        if ($data['nome'] === '') {
-            $errors[] = 'O nome do autor é obrigatório';
-        } elseif (strlen($data['nome']) > 40) {
-            $errors[] = 'O nome do autor deve ter no máximo 40 caracteres';
-        }
+        $data = $this->getPostData();
+        $errors = $this->validate($data);
 
         if (!empty($errors)) {
-            $this->view('pages/autores/form.html.twig', [
-                'title' => 'Cadastrar Autor',
-                'action' => '/autores',
-                'autores' => $this->autor->getAll(),
-                'autor' => $data,
-                'errors' => $errors,
-            ]);
+            $this->renderForm('Cadastrar Autor', '/autores', $data, $errors);
             return;
         }
 
         $this->autor->save($data);
         $this->redirect('/autores/cadastrar');
+    }
+
+    public function edit($id)
+    {
+        $autor = $this->autor->getById($id);
+
+        if (!$autor) {
+            $this->redirect('/autores/cadastrar');
+        }
+
+        $this->renderForm('Editar Autor', '/autores/atualizar/' . $id, $autor);
+    }
+
+    public function update($id)
+    {
+        $data = $this->getPostData();
+        $data['id'] = (int) $id;
+        $errors = $this->validate($data);
+
+        if (!empty($errors)) {
+            $this->renderForm('Editar Autor', '/autores/atualizar/' . $id, $data, $errors);
+            return;
+        }
+
+        $this->autor->save($data);
+        $this->redirect('/autores/cadastrar');
+    }
+
+    public function delete($id)
+    {
+        $id = (int) $id;
+        $relatedBookCount = $this->autor->getRelatedBookCount($id);
+
+        if ($relatedBookCount > 0) {
+            $this->renderForm('Cadastrar Autor', '/autores', null, [
+                $this->buildDeleteBlockedMessage($relatedBookCount),
+            ]);
+            return;
+        }
+
+        try {
+            $this->autor->remove($id);
+            $this->redirect('/autores/cadastrar');
+        } catch (\DomainException $exception) {
+            $this->renderForm('Cadastrar Autor', '/autores', null, [$exception->getMessage()]);
+        }
+    }
+
+    private function getPostData(): array
+    {
+        return [
+            'nome' => trim($_POST['nome'] ?? ''),
+        ];
+    }
+
+    private function validate(array $data): array
+    {
+        $errors = [];
+
+        if ($data['nome'] === '') {
+            $errors[] = 'O nome do autor é obrigatório.';
+        } elseif (mb_strlen($data['nome']) > 40) {
+            $errors[] = 'O nome do autor deve ter no máximo 40 caracteres.';
+        }
+
+        return $errors;
+    }
+
+    private function buildDeleteBlockedMessage(int $relatedBookCount): string
+    {
+        $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
+
+        return 'Nao e possivel excluir este autor porque existem ' . $label . '.';
+    }
+
+    private function renderForm(string $title, string $action, ?array $autor = null, array $errors = []): void
+    {
+        $this->view('pages/autores/form.html.twig', [
+            'title' => $title,
+            'action' => $action,
+            'autores' => $this->autor->getAll(),
+            'autor' => $autor,
+            'errors' => $errors,
+        ]);
     }
 }

@@ -10,7 +10,13 @@ class Autor extends Model
 
     public function getAll()
     {
-        $stmt = $this->db->query('SELECT * FROM autores ORDER BY nome ASC');
+        $stmt = $this->db->query(
+            'SELECT autores.*, COUNT(DISTINCT livro_autor.livro_id) AS total_livros_relacionados
+             FROM autores
+             LEFT JOIN livro_autor ON livro_autor.autor_id = autores.id
+             GROUP BY autores.id, autores.nome, autores.created_at, autores.updated_at
+             ORDER BY autores.nome ASC'
+        );
 
         return $stmt->fetchAll();
     }
@@ -29,8 +35,27 @@ class Autor extends Model
         return $this->create($data);
     }
 
+    public function getRelatedBookCount(int $id): int
+    {
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(DISTINCT livro_id) FROM livro_autor WHERE autor_id = :autor_id'
+        );
+        $stmt->execute(['autor_id' => $id]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function hasRelatedBooks(int $id): bool
+    {
+        return $this->getRelatedBookCount($id) > 0;
+    }
+
     public function remove($id)
     {
+        if ($this->hasRelatedBooks((int) $id)) {
+            throw new \DomainException('Nao e possivel excluir este autor porque existem livros relacionados.');
+        }
+
         return $this->delete($id);
     }
 }

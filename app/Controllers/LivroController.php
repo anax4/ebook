@@ -31,29 +31,20 @@ class LivroController extends Controller
 
     public function create()
     {
-        $this->view('pages/livros/form.html.twig', [
-            'title' => 'Cadastrar Livro',
-            'livro' => null,
-            'action' => '/livros',
-            'autores' => $this->autor->getAll(),
-            'assuntos' => $this->assunto->getAll(),
-            'selectedAutores' => [],
-            'selectedAssuntos' => [],
-        ]);
+        $this->renderForm('Cadastrar Livro', '/livros');
     }
 
     public function store()
     {
         $data = $this->getPostData();
         $errors = $this->validate($data);
-
-        if (!empty($errors)) {
+        if(!empty($errors)){
             $this->renderFormWithErrors('Cadastrar Livro', '/livros', $data, $errors);
             return;
         }
 
         $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
-        $this->redirect('/');
+        $this->redirect('/livros/cadastrar');
     }
 
     public function edit($id)
@@ -211,5 +202,19 @@ class LivroController extends Controller
     private function extractIds(array $items): array
     {
         return array_map('intval', array_column($items, 'id'));
+    }
+
+    private function renderForm(string $title, string $action, ?array $livro = null, array $errors = []): void
+    {
+        $this->view('pages/livros/form.html.twig', [
+            'title' => $title,
+            'livro' => $livro,
+            'action' => $action,
+            'autores' => $this->autor->getAll(),
+            'assuntos' => $this->assunto->getAll(),
+            'selectedAutores' => [],
+            'selectedAssuntos' => [],
+            'errors' => $errors,
+        ]);
     }
 }
