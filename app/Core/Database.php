@@ -155,6 +155,7 @@ class Database
             'id',
             'RESTRICT'
         );
+        $this->createReportViews();
     }
 
     private function ensureColumnExists(string $table, string $column, string $alterSql): void
@@ -213,5 +214,44 @@ class Database
                 $deleteRule
             )
         );
+    }
+
+    private function createReportViews(): void
+    {
+        $reportViewSql = <<<SQL
+            CREATE OR REPLACE VIEW vw_relatorio_livros_por_autor AS
+            SELECT
+                a.id AS autor_id,
+                a.nome AS autor_nome,
+                l.id AS livro_id,
+                l.titulo,
+                l.editora,
+                l.edicao,
+                l.anoPublicacao,
+                l.valor,
+                COALESCE(autores_agg.autores_livro, a.nome) AS autores_livro,
+                COALESCE(assuntos_agg.assuntos_livro, '') AS assuntos_livro
+            FROM livro_autor la
+            INNER JOIN autores a ON a.id = la.autor_id
+            INNER JOIN livros l ON l.id = la.livro_id
+            LEFT JOIN (
+                SELECT
+                    la2.livro_id,
+                    GROUP_CONCAT(DISTINCT a2.nome ORDER BY a2.nome SEPARATOR ', ') AS autores_livro
+                FROM livro_autor la2
+                INNER JOIN autores a2 ON a2.id = la2.autor_id
+                GROUP BY la2.livro_id
+            ) AS autores_agg ON autores_agg.livro_id = l.id
+            LEFT JOIN (
+                SELECT
+                    ls.livro_id,
+                    GROUP_CONCAT(DISTINCT s.descricao ORDER BY s.descricao SEPARATOR ', ') AS assuntos_livro
+                FROM livro_assunto ls
+                INNER JOIN assuntos s ON s.id = ls.assunto_id
+                GROUP BY ls.livro_id
+            ) AS assuntos_agg ON assuntos_agg.livro_id = l.id
+            SQL;
+
+        $this->pdo->exec($reportViewSql);
     }
 }
