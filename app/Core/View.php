@@ -16,7 +16,7 @@ class View
         ]);
 
         self::$twig->addFunction(new \Twig\TwigFunction('asset', function ($path) {
-            return $path;
+            return '/' . ltrim((string) $path, '/');
         }));
 
         return self::$twig;

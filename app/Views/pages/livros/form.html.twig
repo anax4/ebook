@@ -92,21 +92,20 @@
                 placeholder="2024"
             >
         </div>
-        {# TODO - implementar js de validacao de mascara ao digitar #}
         <div class="sm:col-span-2">
             <label for="valor" class="mb-2 block text-sm font-semibold text-ink">
                 Valor do livro <span class="text-danger">*</span>
             </label>
             <input
-                type="number"
+                type="text"
                 id="valor"
                 name="valor"
                 value="{{ livro.valor|default('') }}"
-                min="0"
-                step="0.01"
+                inputmode="numeric"
+                autocomplete="off"
                 required
                 class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
-                placeholder="R$59,90"
+                placeholder="R$00,00"
             >
         </div>
 
@@ -174,4 +173,8 @@
         </div>
     </form>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('assets/js/livro-form.js') }}?v=3" defer></script>
 {% endblock %}
