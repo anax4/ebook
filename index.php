@@ -7,6 +7,25 @@ use App\Core\Router;
 
 define('APP_PATH', __DIR__);
 
+set_exception_handler(function (\Throwable $exception): void {
+    error_log((string) $exception);
+
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
+    http_response_code(500);
+
+    if (strpos($uri, '/api/') === 0) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'error' => 'internal_error',
+            'message' => 'ão foi possível processar a solicitação.',
+        ]);
+        return;
+    }
+
+    echo '500 - Erro interno do servidor';
+});
+
 $loader = new \Twig\Loader\FilesystemLoader(APP_PATH . '/app/Views');
 $twig = View::init($loader);
 
