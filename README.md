@@ -1,6 +1,6 @@
 # Desafio Projeto E-book
 
-Sistema web de cadastro de livros em PHP com MVC simples, com foco principal em frontend com Twig, Tailwind CSS e JS.
+Sistema web de cadastro de livros em PHP com MVC simples, com foco principal em frontend com Twig, Tailwind CSS e JS. O projeto usa paginas renderizadas no servidor e inclui um endpoint JSON interno para a tela de relatorios.
 
 ## Requisitos
 
@@ -52,6 +52,23 @@ Depois acesse:
 
 http://localhost:8000
 
+## Como acessar o relatório
+
+Com a aplicação rodando, acesse:
+
+http://localhost:8000/relatorios
+
+Nessa tela, o relatório é carregado dinamicamente no frontend e consome o endpoint JSON interno `/api/relatorio-livros`.
+
+Voce pode:
+
+- buscar por titulo, autor ou assunto
+- filtrar por autor
+- filtrar por ano
+- alterar a ordenacao
+- exportar o resultado em CSV
+- imprimir o relatório
+
 
 
 ## Estrutura principal
@@ -82,5 +99,5 @@ composer.json
 ## Observacoes
 
 - O frontend usa Twig, Tailwind CSS e JavaScript puro.
-- O relatorio consome a rota JSON `/api/relatorio-livros`.
+- O relatorio consome o endpoint JSON interno `/api/relatorio-livros`.
 - O projeto utiliza MySQL como banco de dados.
