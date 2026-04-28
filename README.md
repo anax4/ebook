@@ -77,5 +77,10 @@ composer.json
 - `POST /livros/atualizar/{id}`
 - `POST /livros/excluir/{id}`
 - `GET /relatorios`
+- `GET /api/relatorio-livros`
 
-## Observações
+## Observacoes
+
+- O frontend usa Twig, Tailwind CSS e JavaScript puro.
+- O relatorio consome a rota JSON `/api/relatorio-livros`.
+- O projeto utiliza MySQL como banco de dados.
