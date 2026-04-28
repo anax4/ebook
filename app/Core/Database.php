@@ -34,7 +34,7 @@ class Database
 
             $this->createTables();
         } catch (\PDOException $e) {
-            die('Erro na conexao com MySQL: ' . $e->getMessage());
+            die('Erro na conexão com MySQL: ' . $e->getMessage());
         }
     }
 

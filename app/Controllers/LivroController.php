@@ -49,6 +49,7 @@ class LivroController extends Controller
 
     public function edit($id)
     {
+        $id = (int) $id;
         $livro = $this->livro->getById($id);
 
         if (!$livro) {
@@ -68,6 +69,7 @@ class LivroController extends Controller
 
     public function update($id)
     {
+        $id = (int) $id;
         $data = $this->getPostData();
         $data['id'] = $id;
         $errors = $this->validate($data);
@@ -108,13 +110,13 @@ class LivroController extends Controller
 
         if ($data['titulo'] === '') {
             $errors[] = 'O título é obrigatório';
-        } elseif (strlen($data['titulo']) > 40) {
+        } elseif (mb_strlen($data['titulo']) > 40) {
             $errors[] = 'O título deve ter no máximo 40 caracteres';
         }
 
         if ($data['editora'] === '') {
             $errors[] = 'A editora é obrigatória';
-        } elseif (strlen($data['editora']) > 40) {
+        } elseif (mb_strlen($data['editora']) > 40) {
             $errors[] = 'A editora deve ter no máximo 40 caracteres';
         }
 

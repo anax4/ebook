@@ -1,15 +1,15 @@
 # Desafio Projeto E-book
 
-Sistema web de cadastro de livros em PHP com MVC simples, com o foco principal frontend com Twig e Tailwind CSS e Js.
+Sistema web de cadastro de livros em PHP com MVC simples, com foco principal em frontend com Twig, Tailwind CSS e JS.
 
 ## Requisitos
 
 - PHP `7.4` ou superior
 - Composer
 - MySQL `5.7+` ou `8+`
-- Extensoes PHP `pdo` e `pdo_mysql`
+- Extensões PHP `pdo` e `pdo_mysql`
 
-## Instalar dependencias
+## Instalar dependências
 
 Na raiz do projeto:
 
@@ -19,7 +19,7 @@ composer install
 
 ## Configurar ambiente
 
-O projeto usa MySQL com configuracao via `.env`.
+O projeto usa MySQL com configuração via `.env`.
 
 Use o arquivo `.env.example` como base e ajuste os valores do seu ambiente:
 
@@ -78,4 +78,4 @@ composer.json
 - `POST /livros/excluir/{id}`
 - `GET /relatorios`
 
-## Observacoes
+## Observações

@@ -3,7 +3,7 @@
 {% block title %}{{ title }} - E-book{% endblock %}
 
 {% block content %}
-<section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/15 bg-white shadow-panel">
+<section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/15 bg-sand/95 shadow-panel">
     <div class="border-b border-secondary/10 px-5 py-5 sm:px-6">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Formulário</p>
         <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
@@ -38,13 +38,13 @@
 
         <div class="flex flex-col gap-3 sm:flex-row">
             <button type="submit" class="inline-flex flex-1 items-center justify-center rounded-full bg-[#b93e0d] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
-                {% if assunto and assunto.id is defined%}
+                {% if assunto and assunto.id is defined %}
                     Atualizar assunto
                 {% else %}
                     Salvar assunto
                 {% endif %}
             </button>
-            <a href="/" class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 bg-white px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
+            <a href="/" class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 bg-sand/60 px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:bg-sand hover:text-[#d9480f]">
                 Voltar
             </a>
         </div>
@@ -58,7 +58,7 @@
         <ul class="mt-4 grid gap-3">
             {% for item in assuntos %}
             {% set totalLivrosRelacionados = item.total_livros_relacionados|default(0) %}
-            <li class="flex flex-col gap-3 rounded-2xl border border-primary/15 bg-ember/35 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <li class="flex flex-col gap-3 rounded-2xl border border-primary/15 bg-white/70 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm font-medium text-ink">{{ item.descricao }}</p>
                     {% if totalLivrosRelacionados > 0 %}
@@ -75,7 +75,7 @@
                     <button
                         type="button"
                         disabled
-                        title="Este assunto possui livros relacionados e nao pode ser excluido."
+                        title="Este assunto possui livros relacionados e não pode ser excluído."
                         class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-full border border-secondary/15 bg-secondary/10 px-5 py-2.5 text-sm font-semibold text-secondary/70 opacity-80"
                     >
                         Excluir

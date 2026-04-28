@@ -27,7 +27,7 @@ class RelatorioLivrosApiController extends Controller
         } catch (\Throwable $exception) {
             $this->json([
                 'error' => 'internal_error',
-                'message' => 'Não foi possivel gerar o relatório.',
+                'message' => 'Não foi possível gerar o relatório.',
             ], 500);
         }
     }
