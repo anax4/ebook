@@ -38,7 +38,7 @@ class LivroController extends Controller
     {
         $data = $this->getPostData();
         $errors = $this->validate($data);
-        if(!empty($errors)){
+        if (!empty($errors)) {
             $this->renderFormWithErrors('Cadastrar Livro', '/livros', $data, $errors);
             return;
         }

@@ -1,7 +1,7 @@
 {% extends "templates/base.html.twig" %}
 
 {% block title %}{{ title }} - E-book{% endblock %}
-{# TODO - trocar a cor de fundo da pagina #}
+{# TODO - trocar a cor de fundo da página #}
 {% block content %}
 <section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/10 bg-sand/95 shadow-panel">
     <div class="border-b border-secondary/10 px-5 py-5 sm:px-8">
@@ -25,7 +25,11 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
+    <form
+        method="POST"
+        action="{{ action }}"
+        class="grid gap-5 p-5 sm:grid-cols-2 sm:p-8"
+    >
         <div class="sm:col-span-2">
             <label for="titulo" class="mb-2 block text-sm font-semibold text-ink">
                 Título <span class="text-danger">*</span>
