@@ -43,7 +43,7 @@ class RelatorioLivrosService
 
         if ($autorId !== null && $autorId !== '') {
             if (!ctype_digit((string) $autorId) || (int) $autorId < 1) {
-                throw new \InvalidArgumentException('O campo auto deve ser selecionado.');
+                throw new \InvalidArgumentException('O campo autor deve ser selecionado.');
             }
 
             $autorId = (int) $autorId;
@@ -56,7 +56,7 @@ class RelatorioLivrosService
         }
 
         if (!in_array($sort, ['title', 'year', 'value'], true)) {
-            throw new \InvalidArgumentException('O campo da ordenação deve ser: titulo, ano ou valor.');
+            throw new \InvalidArgumentException('O campo da ordenação deve ser: título, ano ou valor.');
         }
 
         return [

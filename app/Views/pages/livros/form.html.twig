@@ -1,9 +1,9 @@
 {% extends "templates/base.html.twig" %}
 
 {% block title %}{{ title }} - E-book{% endblock %}
-{# TODO - trocar a cor de fundo da pagina #}
+{# TODO - trocar a cor de fundo da página #}
 {% block content %}
-<section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/10 bg-white shadow-panel">
+<section class="mx-auto max-w-4xl animate-rise rounded-[2rem] border border-secondary/10 bg-sand/95 shadow-panel">
     <div class="border-b border-secondary/10 px-5 py-5 sm:px-8">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Formulário</p>
         <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">{{ title }}</h1>
@@ -25,7 +25,11 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{{ action }}" class="grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
+    <form
+        method="POST"
+        action="{{ action }}"
+        class="grid gap-5 p-5 sm:grid-cols-2 sm:p-8"
+    >
         <div class="sm:col-span-2">
             <label for="titulo" class="mb-2 block text-sm font-semibold text-ink">
                 Título <span class="text-danger">*</span>
@@ -92,32 +96,31 @@
                 placeholder="2024"
             >
         </div>
-
         <div class="sm:col-span-2">
             <label for="valor" class="mb-2 block text-sm font-semibold text-ink">
                 Valor do livro <span class="text-danger">*</span>
             </label>
             <input
-                type="number"
+                type="text"
                 id="valor"
                 name="valor"
                 value="{{ livro.valor|default('') }}"
-                min="0"
-                step="0.01"
+                inputmode="numeric"
+                autocomplete="off"
                 required
                 class="w-full rounded-2xl border border-secondary/20 bg-white px-4 py-3 text-ink outline-none transition placeholder:text-secondary/55 focus:border-primary focus:ring-4 focus:ring-primary/10"
-                placeholder="59,90"
+                placeholder="R$00,00"
             >
         </div>
 
         <div>
             <p class="mb-3 block text-sm font-semibold text-ink">Autores <span class="text-danger">*</span></p>
             {% if autores is empty %}
-            <div class="rounded-2xl border border-dashed border-secondary/25 bg-ember px-4 py-4 text-sm text-secondary">
+            <div class="rounded-2xl border border-dashed border-secondary/25 bg-white/70 px-4 py-4 text-sm text-secondary">
                 Nenhum autor cadastrado. <a href="/autores/cadastrar" class="font-semibold text-primary">Cadastre um autor primeiro.</a>
             </div>
             {% else %}
-            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-ember/45 p-4">
+            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-white/70 p-4">
                 {% for autor in autores %}
                 <label class="flex items-center gap-3 text-sm text-ink">
                     <input
@@ -137,11 +140,11 @@
         <div>
             <p class="mb-3 block text-sm font-semibold text-ink">Assuntos <span class="text-danger">*</span></p>
             {% if assuntos is empty %}
-            <div class="rounded-2xl border border-dashed border-secondary/25 bg-ember px-4 py-4 text-sm text-secondary">
+            <div class="rounded-2xl border border-dashed border-secondary/25 bg-white/70 px-4 py-4 text-sm text-secondary">
                 Nenhum assunto cadastrado. <a href="/assuntos/cadastrar" class="font-semibold text-primary">Cadastre um assunto primeiro.</a>
             </div>
             {% else %}
-            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-ember/45 p-4">
+            <div class="space-y-3 rounded-2xl border border-secondary/20 bg-white/70 p-4">
                 {% for assunto in assuntos %}
                 <label class="flex items-center gap-3 text-sm text-ink">
                     <input
@@ -167,11 +170,15 @@
             </button>
             <a
                 href="/"
-                class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 bg-white px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]"
+                class="inline-flex flex-1 items-center justify-center rounded-full border border-secondary/20 bg-sand/60 px-6 py-3 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:bg-sand hover:text-[#d9480f]"
             >
                 Cancelar
             </a>
         </div>
     </form>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('assets/js/livro-form.js') }}?v=3" defer></script>
 {% endblock %}

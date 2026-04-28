@@ -104,7 +104,7 @@ class AssuntoController extends Controller
     {
         $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
 
-        return 'Nao e possivel excluir este assunto porque existem ' . $label . '.';
+        return 'Não é possível excluir este assunto porque existem ' . $label . '.';
     }
 
     private function renderForm(string $title, string $action, ?array $assunto = null, array $errors = []): void

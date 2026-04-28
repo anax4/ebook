@@ -104,7 +104,7 @@ class AutorController extends Controller
     {
         $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
 
-        return 'Nao e possivel excluir este autor porque existem ' . $label . '.';
+        return 'Não é possível excluir este autor porque existem ' . $label . '.';
     }
 
     private function renderForm(string $title, string $action, ?array $autor = null, array $errors = []): void

@@ -89,19 +89,19 @@
         const sort = document.getElementById('report-sort').value;
 
         if (search.length > 120) {
-            errors['report-search'] = 'A busca deve ter no maximo 120 caracteres.';
+            errors['report-search'] = 'A busca deve ter no máximo 120 caracteres.';
         }
 
         if (author.value !== '' && ![...author.options].some((option) => option.value === author.value)) {
-            errors['report-author'] = 'Selecione um autor valido.';
+            errors['report-author'] = 'Selecione um autor válido.';
         }
 
         if (year.value !== '' && ![...year.options].some((option) => option.value === year.value)) {
-            errors['report-year'] = 'Selecione um ano valido.';
+            errors['report-year'] = 'Selecione um ano válido.';
         }
 
         if (!allowedSorts.includes(sort)) {
-            errors['report-sort'] = 'Selecione uma ordenacao valida.';
+            errors['report-sort'] = 'Selecione uma ordenação válida.';
         }
 
         clearFieldErrors();
@@ -223,7 +223,7 @@
                             <thead>
                                 <tr class="border-b border-secondary/15 text-secondary">
                                     <th class="px-3 py-2 font-semibold">ID</th>
-                                    <th class="px-3 py-2 font-semibold">Titulo</th>
+                                    <th class="px-3 py-2 font-semibold">Título</th>
                                     <th class="px-3 py-2 font-semibold">Editora</th>
                                     <th class="px-3 py-2 font-semibold">Ano</th>
                                     <th class="px-3 py-2 font-semibold">Valor</th>
@@ -262,13 +262,13 @@
             renderGroups();
             updateTotal();
             setHidden(error, true);
-            updateStatus('Corrija os filtros destacados para consultar o relatorio.');
+            updateStatus('Corrija os filtros destacados para consultar o relatório.');
             return;
         }
 
         setHidden(loading, false);
         setHidden(error, true);
-        updateStatus('Carregando relatorio...');
+        updateStatus('Carregando relatório...');
 
         try {
             const response = await fetch(buildQuery(), {
@@ -280,7 +280,7 @@
             const payload = await response.json();
 
             if (!response.ok) {
-                throw new Error(payload.message || 'Nao foi possivel carregar o relatorio.');
+                throw new Error(payload.message || 'Não foi possível carregar o relatório.');
             }
 
             state.data = payload.data || [];
@@ -290,15 +290,15 @@
             renderYearOptions();
             renderGroups();
             updateTotal();
-            updateStatus(`Relatorio carregado com ${state.meta.total || 0} autor(es).`);
+            updateStatus(`Relatório carregado com ${state.meta.total || 0} autor(es).`);
         } catch (exception) {
             state.data = [];
             state.meta = { total: 0 };
             renderGroups();
             updateTotal();
-            error.textContent = exception.message || 'Falha inesperada ao carregar o relatorio.';
+            error.textContent = exception.message || 'Falha inesperada ao carregar o relatório.';
             setHidden(error, false);
-            updateStatus('Falha ao consultar a API do relatorio.');
+            updateStatus('Falha ao consultar a API do relatório.');
         } finally {
             setHidden(loading, true);
         }

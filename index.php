@@ -7,7 +7,6 @@ use App\Core\Router;
 
 define('APP_PATH', __DIR__);
 
-
 $loader = new \Twig\Loader\FilesystemLoader(APP_PATH . '/app/Views');
 $twig = View::init($loader);
 

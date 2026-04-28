@@ -53,7 +53,7 @@ class Assunto extends Model
     public function remove($id)
     {
         if ($this->hasRelatedBooks((int) $id)) {
-            throw new \DomainException('Nao e possivel excluir este assunto porque existem livros relacionados.');
+            throw new \DomainException('Não é possível excluir este assunto porque existem livros relacionados.');
         }
 
         return $this->delete($id);

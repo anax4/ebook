@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}E-book - Sistema de Cadastro{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
 </head>
 <body class="min-h-screen bg-clay text-ink antialiased">
     <div class="flex min-h-screen flex-col">
-        <header class="border-b border-secondary/15 bg-white">
+        <header class="relative z-30 border-b border-secondary/15 bg-white">
             <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
                 <a href="/" class="inline-flex items-center gap-3 text-ink">
                     <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#d9480f] text-white">
@@ -24,21 +25,32 @@
                 </a>
 
                 <nav class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                    {# TODO - mudar para um menu hamburguer quando for para mobile e facilitar o ux enquanto tiver em outras paginas 
-                    e voltar p menu dos cards #}
-                    <a href="/" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold
-                                        text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
-                        Catálogo
-                    </a>
-                    {# <a href="/autores/cadastrar" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
-                        Cadastrar autor
-                    </a>
-                    <a href="/assuntos/cadastrar" class="inline-flex items-center justify-center rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f]">
-                        Cadastrar assunto
-                    </a>
-                    <a href="/livros/cadastrar" class="inline-flex items-center justify-center rounded-full bg-[#d9480f] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#b93e0d]">
-                        Cadastrar livro
-                    </a> #}
+                    <details class="relative z-40 w-full sm:w-auto">
+                        <summary class="list-none [&::-webkit-details-marker]:hidden inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-secondary/20 px-4 py-2 text-sm font-semibold text-secondary transition hover:border-[#d9480f] hover:text-[#d9480f] sm:w-auto">
+                            Catálogo
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </summary>
+
+                        <div class="z-50 mt-3 w-full rounded-[1.5rem] border border-secondary/15 bg-white/95 p-2 shadow-panel sm:absolute sm:right-0 sm:w-64">
+                            <a href="/" class="flex rounded-2xl px-4 py-3 text-sm font-medium text-ink transition hover:bg-sand hover:text-[#d9480f]">
+                                Ver catálogo
+                            </a>
+                            <a href="/livros/cadastrar" class="flex rounded-2xl px-4 py-3 text-sm font-medium text-ink transition hover:bg-sand hover:text-[#d9480f]">
+                                Cadastrar livro
+                            </a>
+                            <a href="/autores/cadastrar" class="flex rounded-2xl px-4 py-3 text-sm font-medium text-ink transition hover:bg-sand hover:text-[#d9480f]">
+                                Cadastrar autor
+                            </a>
+                            <a href="/assuntos/cadastrar" class="flex rounded-2xl px-4 py-3 text-sm font-medium text-ink transition hover:bg-sand hover:text-[#d9480f]">
+                                Cadastrar assunto
+                            </a>
+                            <a href="/relatorios" class="flex rounded-2xl px-4 py-3 text-sm font-medium text-ink transition hover:bg-sand hover:text-[#d9480f]">
+                                Relatórios
+                            </a>
+                        </div>
+                    </details>
                 </nav>
             </div>
         </header>
