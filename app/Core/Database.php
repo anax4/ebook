@@ -53,10 +53,10 @@ class Database
     private function getConfig(): array
     {
         return [
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'host' => env('DB_HOST', 'db'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'ebook'),
-            'username' => env('DB_USERNAME', 'root'),
+            'username' => env('DB_USERNAME', 'user'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => $this->normalizeSqlToken(env('DB_CHARSET', 'utf8mb4'), 'utf8mb4'),
             'collation' => $this->normalizeSqlToken(env('DB_COLLATION', 'utf8mb4_unicode_ci'), 'utf8mb4_unicode_ci'),
