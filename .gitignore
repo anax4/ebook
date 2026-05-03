@@ -4,6 +4,7 @@
 
 # test output
 /coverage/
+/.phpunit.cache/
 
 # Environment
 .env
