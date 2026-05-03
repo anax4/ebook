@@ -62,18 +62,8 @@ class AssuntoController extends Controller
 
     public function delete($id)
     {
-        $id = (int) $id;
-        $relatedBookCount = $this->assunto->getRelatedBookCount($id);
-
-        if ($relatedBookCount > 0) {
-            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [
-                $this->buildDeleteBlockedMessage($relatedBookCount),
-            ]);
-            return;
-        }
-
         try {
-            $this->assunto->remove($id);
+            $this->assunto->remove((int) $id);
             $this->redirect('/assuntos/cadastrar');
         } catch (\DomainException $exception) {
             $this->renderForm('Cadastrar Assunto', '/assuntos', null, [$exception->getMessage()]);
@@ -98,13 +88,6 @@ class AssuntoController extends Controller
         }
 
         return $errors;
-    }
-
-    private function buildDeleteBlockedMessage(int $relatedBookCount): string
-    {
-        $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
-
-        return 'Não é possível excluir este assunto porque existem ' . $label . '.';
     }
 
     private function renderForm(string $title, string $action, ?array $assunto = null, array $errors = []): void

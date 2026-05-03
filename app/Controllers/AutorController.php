@@ -62,18 +62,8 @@ class AutorController extends Controller
 
     public function delete($id)
     {
-        $id = (int) $id;
-        $relatedBookCount = $this->autor->getRelatedBookCount($id);
-
-        if ($relatedBookCount > 0) {
-            $this->renderForm('Cadastrar Autor', '/autores', null, [
-                $this->buildDeleteBlockedMessage($relatedBookCount),
-            ]);
-            return;
-        }
-
         try {
-            $this->autor->remove($id);
+            $this->autor->remove((int) $id);
             $this->redirect('/autores/cadastrar');
         } catch (\DomainException $exception) {
             $this->renderForm('Cadastrar Autor', '/autores', null, [$exception->getMessage()]);
@@ -98,13 +88,6 @@ class AutorController extends Controller
         }
 
         return $errors;
-    }
-
-    private function buildDeleteBlockedMessage(int $relatedBookCount): string
-    {
-        $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
-
-        return 'Não é possível excluir este autor porque existem ' . $label . '.';
     }
 
     private function renderForm(string $title, string $action, ?array $autor = null, array $errors = []): void
