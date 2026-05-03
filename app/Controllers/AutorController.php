@@ -45,6 +45,7 @@ class AutorController extends Controller
         $autor = $this->autor->getById($id);
 
         if (!$autor) {
+            $this->flash('error', 'Autor não encontrado.', 'Registro não localizado');
             $this->redirect('/autores/cadastrar');
         }
 

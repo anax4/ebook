@@ -57,6 +57,7 @@ class LivroController extends Controller
         $livro = $this->livro->getById($id);
 
         if (!$livro) {
+            $this->flash('error', 'Livro não encontrado.', 'Registro não localizado');
             $this->redirect('/');
         }
 

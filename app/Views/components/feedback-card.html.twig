@@ -1,0 +1,88 @@
+{% set variant = variant|default('info') %}
+{% set title = title|default('Aviso') %}
+{% set message = message|default('') %}
+{% set message_target = message_target|default('') %}
+{% set items = items|default([]) %}
+{% set dismissible = dismissible|default(false) %}
+
+{% set tones = {
+    'success': {
+        accent: 'bg-success',
+        badge: 'bg-success/10 text-success',
+        border: 'border-success/20',
+        hover: 'hover:bg-success/10 hover:text-success'
+    },
+    'error': {
+        accent: 'bg-danger',
+        badge: 'bg-danger/10 text-danger',
+        border: 'border-danger/20',
+        hover: 'hover:bg-danger/10 hover:text-danger'
+    },
+    'info': {
+        accent: 'bg-primary',
+        badge: 'bg-primary/10 text-primary',
+        border: 'border-primary/20',
+        hover: 'hover:bg-primary/10 hover:text-primary'
+    }
+} %}
+
+{% set tone = tones[variant] is defined ? tones[variant] : tones.info %}
+
+<feedback-card variant="{{ variant }}" {% if dismissible %}dismissible{% endif %} class="block">
+    <article class="relative overflow-hidden rounded-[1.5rem] border {{ tone.border }} bg-white/95 shadow-panel">
+        <span class="absolute inset-y-0 left-0 w-1 {{ tone.accent }}"></span>
+
+        <div class="grid gap-3 px-5 py-4 sm:px-6">
+            <div class="flex items-start gap-4">
+                <span class="mt-0.5 inline-flex h-11 w-11 items-center justify-center rounded-full {{ tone.badge }}" aria-hidden="true">
+                    {% if variant == 'success' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12.5L9.5 17 19 7.5" />
+                    </svg>
+                    {% elseif variant == 'error' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4.5m0 3.5h.01M10.29 3.86 1.82 18A2 2 0 0 0 3.53 21h16.94A2 2 0 0 0 22.18 18L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                    </svg>
+                    {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 16v-4m0-4h.01M22 12A10 10 0 1 1 12 2a10 10 0 0 1 10 10Z" />
+                    </svg>
+                    {% endif %}
+                </span>
+
+                <div class="min-w-0 flex-1">
+                    <h3 class="font-sans text-base font-bold tracking-[-0.01em] text-ink">{{ title }}</h3>
+
+                    {% if message is not empty %}
+                    <p {% if message_target is not empty %}data-feedback-message="{{ message_target }}"{% endif %} class="mt-1 text-sm font-medium leading-6 text-secondary">{{ message }}</p>
+                    {% endif %}
+                </div>
+
+                {% if dismissible %}
+                <button
+                    type="button"
+                    data-feedback-close
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full text-secondary transition {{ tone.hover }}"
+                    aria-label="Fechar mensagem"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 6 18 18M18 6 6 18" />
+                    </svg>
+                </button>
+                {% endif %}
+            </div>
+
+            {% if items is not empty %}
+            <div class="pl-[3.75rem] text-sm leading-6 text-secondary max-sm:pl-0">
+                <ul class="list-disc space-y-1 pl-5">
+                    {% for item in items %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% block feedback_footer %}{% endblock %}
+        </div>
+    </article>
+</feedback-card>

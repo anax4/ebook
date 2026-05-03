@@ -25,6 +25,7 @@ class AssuntoController extends Controller
         $assunto = $this->assunto->getById($id);
 
         if (!$assunto) {
+            $this->flash('error', 'Assunto não encontrado.', 'Registro não localizado');
             $this->redirect('/assuntos/cadastrar');
         }
 

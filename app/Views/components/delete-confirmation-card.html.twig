@@ -1,0 +1,40 @@
+{% set message = message|default('Tem certeza que deseja continuar?') %}
+{% set confirm_label = confirm_label|default('Sim') %}
+{% set cancel_label = cancel_label|default('Não') %}
+
+<div id="delete-confirmation-modal" class="fixed inset-0 z-[80] hidden items-center justify-center px-4 py-6 sm:px-6" data-delete-modal aria-hidden="true">
+    <button type="button" class="absolute inset-0 bg-ink/55 backdrop-blur-[2px]" data-delete-backdrop aria-label="Fechar confirmação"></button>
+
+    <div class="relative z-10 w-full max-w-lg">
+        {% embed 'components/feedback-card.html.twig' with {
+            variant: 'error',
+            title: 'Confirmar exclusão',
+            message: message,
+            message_target: 'delete-modal-message',
+            dismissible: true,
+            confirm_label: confirm_label,
+            cancel_label: cancel_label
+        } only %}
+            {% block feedback_footer %}
+            <div class="pl-[3.75rem] max-sm:pl-0">
+                <div class="flex flex-col gap-3 sm:flex-row">
+                    <button
+                        type="button"
+                        data-delete-cancel
+                        class="inline-flex items-center justify-center rounded-full border border-secondary/20 bg-white px-5 py-2.5 text-sm font-semibold text-secondary transition hover:border-danger hover:text-danger"
+                    >
+                        {{ cancel_label }}
+                    </button>
+                    <button
+                        type="button"
+                        data-delete-confirm
+                        class="inline-flex items-center justify-center rounded-full bg-danger px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#a61f1f]"
+                    >
+                        {{ confirm_label }}
+                    </button>
+                </div>
+            </div>
+            {% endblock %}
+        {% endembed %}
+    </div>
+</div>

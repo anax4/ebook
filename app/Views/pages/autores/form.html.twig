@@ -10,12 +10,12 @@
     </div>
 
     {% if errors is defined and errors is not empty %}
-    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-8">
-        <ul class="list-inside list-disc space-y-1 text-sm text-danger">
-            {% for error in errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
+    <div class="mx-5 mt-5 sm:mx-8">
+        {% include 'components/feedback-card.html.twig' with {
+            variant: 'error',
+            title: 'Não foi possível salvar',
+            items: errors
+        } only %}
     </div>
     {% endif %}
 
@@ -81,8 +81,8 @@
                         Excluir
                     </button>
                     {% else %}
-                    <form action="/autores/excluir/{{ item.id }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este autor?');">
-                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-full border border-danger/20 bg-danger/5 px-5 py-2.5 text-sm font-semibold text-danger transition hover:bg-danger hover:text-white">
+                    <form action="/autores/excluir/{{ item.id }}" method="POST" data-delete-confirmable data-delete-message="Tem certeza que deseja excluir este autor?">
+                        <button type="button" data-delete-toggle class="inline-flex w-full items-center justify-center rounded-full border border-danger/20 bg-danger/5 px-5 py-2.5 text-sm font-semibold text-danger transition hover:bg-danger hover:text-white">
                             Excluir
                         </button>
                     </form>

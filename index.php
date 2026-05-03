@@ -7,6 +7,16 @@ use App\Core\Router;
 
 define('APP_PATH', __DIR__);
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+ini_set('default_charset', 'UTF-8');
+
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding('UTF-8');
+}
+
 set_exception_handler(function (\Throwable $exception): void {
     error_log((string) $exception);
 
