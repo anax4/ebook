@@ -1,5 +1,9 @@
 # Dependencies
 /vendor/
+/node_modules/
+
+# test output
+/coverage/
 
 # Environment
 .env

@@ -1,0 +1,12 @@
+{
+  "name": "ebook-frontend-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:frontend": "vitest run --pool threads",
+    "test:frontend:watch": "vitest --pool threads"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.5"
+  }
+}

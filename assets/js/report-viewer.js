@@ -1,3 +1,5 @@
+import { buildReportQuery, csvEscape, validateReportFilters } from './report-viewer-utils.js';
+
 (() => {
     const state = {
         data: [],
@@ -6,7 +8,6 @@
         years: [],
         searchTimer: null,
     };
-    const allowedSorts = ['title', 'year', 'value'];
 
     function escapeHtml(value) {
         return String(value ?? '')
@@ -22,11 +23,6 @@
             style: 'currency',
             currency: 'BRL',
         }).format(value || 0);
-    }
-
-    function csvEscape(value) {
-        const text = String(value ?? '').replace(/"/g, '""');
-        return /[;"\n]/.test(text) ? `"${text}"` : text;
     }
 
     function setHidden(element, hidden) {
@@ -82,64 +78,38 @@
     }
 
     function validateFilters() {
-        const errors = {};
-        const search = document.getElementById('report-search').value.trim();
+        const search = document.getElementById('report-search');
         const author = document.getElementById('report-author');
         const year = document.getElementById('report-year');
-        const sort = document.getElementById('report-sort').value;
-
-        if (search.length > 120) {
-            errors['report-search'] = 'A busca deve ter no máximo 120 caracteres.';
-        }
-
-        if (author.value !== '' && ![...author.options].some((option) => option.value === author.value)) {
-            errors['report-author'] = 'Selecione um autor válido.';
-        }
-
-        if (year.value !== '' && ![...year.options].some((option) => option.value === year.value)) {
-            errors['report-year'] = 'Selecione um ano válido.';
-        }
-
-        if (!allowedSorts.includes(sort)) {
-            errors['report-sort'] = 'Selecione uma ordenação válida.';
-        }
+        const sort = document.getElementById('report-sort');
+        const validation = validateReportFilters({
+            search: search.value,
+            authorId: author.value,
+            year: year.value,
+            sort: sort.value,
+            authors: [...author.options]
+                .map((option) => option.value)
+                .filter((value) => value !== ''),
+            years: [...year.options]
+                .map((option) => option.value)
+                .filter((value) => value !== ''),
+        });
 
         clearFieldErrors();
-        Object.entries(errors).forEach(([fieldId, message]) => {
+        Object.entries(validation.errors).forEach(([fieldId, message]) => {
             setFieldError(fieldId, message);
         });
 
-        return {
-            valid: Object.keys(errors).length === 0,
-            errors,
-        };
+        return validation;
     }
 
     function buildQuery() {
-        const params = new URLSearchParams();
-        const search = document.getElementById('report-search').value.trim();
-        const authorId = document.getElementById('report-author').value;
-        const year = document.getElementById('report-year').value;
-        const sort = document.getElementById('report-sort').value;
-
-        if (search !== '') {
-            params.set('search', search);
-        }
-
-        if (authorId !== '') {
-            params.set('autor_id', authorId);
-        }
-
-        if (year !== '') {
-            params.set('anoPublicacao', year);
-        }
-
-        if (sort !== '') {
-            params.set('sort', sort);
-        }
-
-        const query = params.toString();
-        return query ? `/api/relatorio-livros?${query}` : '/api/relatorio-livros';
+        return buildReportQuery({
+            search: document.getElementById('report-search').value,
+            authorId: document.getElementById('report-author').value,
+            year: document.getElementById('report-year').value,
+            sort: document.getElementById('report-sort').value,
+        });
     }
 
     function renderAuthorOptions() {
