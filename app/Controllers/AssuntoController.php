@@ -25,6 +25,7 @@ class AssuntoController extends Controller
         $assunto = $this->assunto->getById($id);
 
         if (!$assunto) {
+            $this->flash('error', 'Assunto não encontrado.', 'Registro não localizado');
             $this->redirect('/assuntos/cadastrar');
         }
 
@@ -42,6 +43,7 @@ class AssuntoController extends Controller
         }
 
         $this->assunto->save($data);
+        $this->flash('success', 'Assunto cadastrado com sucesso.', 'Cadastro concluído');
         $this->redirect('/assuntos/cadastrar');
     }
 
@@ -57,6 +59,7 @@ class AssuntoController extends Controller
         }
 
         $this->assunto->save($data);
+        $this->flash('success', 'Assunto atualizado com sucesso.', 'Alterações salvas');
         $this->redirect('/assuntos/cadastrar');
     }
 
@@ -66,17 +69,17 @@ class AssuntoController extends Controller
         $relatedBookCount = $this->assunto->getRelatedBookCount($id);
 
         if ($relatedBookCount > 0) {
-            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [
-                $this->buildDeleteBlockedMessage($relatedBookCount),
-            ]);
-            return;
+            $this->flash('error', $this->buildDeleteBlockedMessage($relatedBookCount), 'Exclusão não permitida');
+            $this->redirect('/assuntos/cadastrar');
         }
 
         try {
             $this->assunto->remove($id);
+            $this->flash('success', 'Assunto excluído com sucesso.', 'Exclusão concluída');
             $this->redirect('/assuntos/cadastrar');
         } catch (\DomainException $exception) {
-            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [$exception->getMessage()]);
+            $this->flash('error', $exception->getMessage(), 'Exclusão não permitida');
+            $this->redirect('/assuntos/cadastrar');
         }
     }
 

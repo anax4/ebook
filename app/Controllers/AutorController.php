@@ -31,6 +31,7 @@ class AutorController extends Controller
         }
 
         $this->autor->save($data);
+        $this->flash('success', 'Autor cadastrado com sucesso.', 'Cadastro concluído');
         $this->redirect('/autores/cadastrar');
     }
 
@@ -39,6 +40,7 @@ class AutorController extends Controller
         $autor = $this->autor->getById($id);
 
         if (!$autor) {
+            $this->flash('error', 'Autor não encontrado.', 'Registro não localizado');
             $this->redirect('/autores/cadastrar');
         }
 
@@ -57,6 +59,7 @@ class AutorController extends Controller
         }
 
         $this->autor->save($data);
+        $this->flash('success', 'Autor atualizado com sucesso.', 'Alterações salvas');
         $this->redirect('/autores/cadastrar');
     }
 
@@ -66,17 +69,17 @@ class AutorController extends Controller
         $relatedBookCount = $this->autor->getRelatedBookCount($id);
 
         if ($relatedBookCount > 0) {
-            $this->renderForm('Cadastrar Autor', '/autores', null, [
-                $this->buildDeleteBlockedMessage($relatedBookCount),
-            ]);
-            return;
+            $this->flash('error', $this->buildDeleteBlockedMessage($relatedBookCount), 'Exclusão não permitida');
+            $this->redirect('/autores/cadastrar');
         }
 
         try {
             $this->autor->remove($id);
+            $this->flash('success', 'Autor excluído com sucesso.', 'Exclusão concluída');
             $this->redirect('/autores/cadastrar');
         } catch (\DomainException $exception) {
-            $this->renderForm('Cadastrar Autor', '/autores', null, [$exception->getMessage()]);
+            $this->flash('error', $exception->getMessage(), 'Exclusão não permitida');
+            $this->redirect('/autores/cadastrar');
         }
     }
 

@@ -44,6 +44,7 @@ class LivroController extends Controller
         }
 
         $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
+        $this->flash('success', 'Livro cadastrado com sucesso.', 'Cadastro concluído');
         $this->redirect('/livros/cadastrar');
     }
 
@@ -53,6 +54,7 @@ class LivroController extends Controller
         $livro = $this->livro->getById($id);
 
         if (!$livro) {
+            $this->flash('error', 'Livro não encontrado.', 'Registro não localizado');
             $this->redirect('/');
         }
 
@@ -80,12 +82,14 @@ class LivroController extends Controller
         }
 
         $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
+        $this->flash('success', 'Livro atualizado com sucesso.', 'Alterações salvas');
         $this->redirect('/');
     }
 
     public function destroy($id)
     {
         $this->livro->remove((int) $id);
+        $this->flash('success', 'Livro excluído com sucesso.', 'Exclusão concluída');
         $this->redirect('/');
     }
 

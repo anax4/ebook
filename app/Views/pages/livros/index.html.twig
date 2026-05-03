@@ -51,8 +51,8 @@
                     <a href="/livros/editar/{{ livro.id }}" class="inline-flex items-center justify-center rounded-full bg-[#b93e0d] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#9c330b]">
                         Editar
                     </a>
-                    <form action="/livros/excluir/{{ livro.id }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este livro?');">
-                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-full border border-danger/20 bg-danger/5 px-5 py-3 text-sm font-semibold text-danger transition hover:bg-danger hover:text-white">
+                    <form action="/livros/excluir/{{ livro.id }}" method="POST" data-delete-confirmable data-delete-message="Tem certeza que deseja excluir este livro?">
+                        <button type="button" data-delete-toggle class="inline-flex w-full items-center justify-center rounded-full border border-danger/20 bg-danger/5 px-5 py-3 text-sm font-semibold text-danger transition hover:bg-danger hover:text-white">
                             Excluir
                         </button>
                     </form>
