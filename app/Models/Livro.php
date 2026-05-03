@@ -63,8 +63,11 @@ class Livro extends Model
             $this->db->commit();
 
             return $livroId;
-        } catch (\Throwable $exception) {
-            $this->db->rollBack();
+        } catch (\PDOException $exception) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+
             throw $exception;
         }
     }
@@ -78,8 +81,11 @@ class Livro extends Model
             $this->deletePivotRows('livro_assunto', (int) $id);
             $this->delete($id);
             $this->db->commit();
-        } catch (\Throwable $exception) {
-            $this->db->rollBack();
+        } catch (\PDOException $exception) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+
             throw $exception;
         }
     }

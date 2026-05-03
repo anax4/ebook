@@ -41,8 +41,14 @@ class AssuntoController extends Controller
             return;
         }
 
-        $this->assunto->save($data);
-        $this->redirect('/assuntos/cadastrar');
+        try {
+            $this->assunto->save($data);
+            $this->redirect('/assuntos/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Assunto', '/assuntos', $data, [
+                'Não foi possível salvar o assunto no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function update($id)
@@ -56,8 +62,14 @@ class AssuntoController extends Controller
             return;
         }
 
-        $this->assunto->save($data);
-        $this->redirect('/assuntos/cadastrar');
+        try {
+            $this->assunto->save($data);
+            $this->redirect('/assuntos/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Editar Assunto', '/assuntos/atualizar/' . $id, $data, [
+                'Não foi possível atualizar o assunto no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function delete($id)
@@ -67,6 +79,10 @@ class AssuntoController extends Controller
             $this->redirect('/assuntos/cadastrar');
         } catch (\DomainException $exception) {
             $this->renderForm('Cadastrar Assunto', '/assuntos', null, [$exception->getMessage()]);
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [
+                'Não foi possível excluir o assunto no banco de dados. Tente novamente.',
+            ]);
         }
     }
 

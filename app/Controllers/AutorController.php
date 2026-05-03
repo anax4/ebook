@@ -30,8 +30,14 @@ class AutorController extends Controller
             return;
         }
 
-        $this->autor->save($data);
-        $this->redirect('/autores/cadastrar');
+        try {
+            $this->autor->save($data);
+            $this->redirect('/autores/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Autor', '/autores', $data, [
+                'Não foi possível salvar o autor no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function edit($id)
@@ -56,8 +62,14 @@ class AutorController extends Controller
             return;
         }
 
-        $this->autor->save($data);
-        $this->redirect('/autores/cadastrar');
+        try {
+            $this->autor->save($data);
+            $this->redirect('/autores/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Editar Autor', '/autores/atualizar/' . $id, $data, [
+                'Não foi possível atualizar o autor no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function delete($id)
@@ -67,6 +79,10 @@ class AutorController extends Controller
             $this->redirect('/autores/cadastrar');
         } catch (\DomainException $exception) {
             $this->renderForm('Cadastrar Autor', '/autores', null, [$exception->getMessage()]);
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Autor', '/autores', null, [
+                'Não foi possível excluir o autor no banco de dados. Tente novamente.',
+            ]);
         }
     }
 
