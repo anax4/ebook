@@ -24,10 +24,10 @@ class RelatorioLivrosApiController extends Controller
                 'error' => 'validation_error',
                 'message' => $exception->getMessage(),
             ], 400);
-        } catch (\Throwable $exception) {
+        } catch (\PDOException $exception) {
             $this->json([
-                'error' => 'internal_error',
-                'message' => 'Não foi possível gerar o relatório.',
+                'error' => 'database_error',
+                'message' => 'Não foi possível consultar o banco de dados do relatório.',
             ], 500);
         }
     }

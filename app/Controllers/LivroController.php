@@ -23,10 +23,7 @@ class LivroController extends Controller
 
     public function index()
     {
-        $this->view('pages/livros/index.html.twig', [
-            'livros' => $this->livro->getAll(),
-            'title' => 'Livros Cadastrados',
-        ]);
+        $this->renderIndex();
     }
 
     public function create()
@@ -38,14 +35,20 @@ class LivroController extends Controller
     {
         $data = $this->getPostData();
         $errors = $this->validate($data);
+
         if (!empty($errors)) {
             $this->renderFormWithErrors('Cadastrar Livro', '/livros', $data, $errors);
             return;
         }
 
-        $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
-        $this->flash('success', 'Livro cadastrado com sucesso.', 'Cadastro concluído');
-        $this->redirect('/livros/cadastrar');
+        try {
+            $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
+            $this->redirect('/livros/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderFormWithErrors('Cadastrar Livro', '/livros', $data, [
+                'Não foi possível salvar o livro no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function edit($id)
@@ -81,16 +84,26 @@ class LivroController extends Controller
             return;
         }
 
-        $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
-        $this->flash('success', 'Livro atualizado com sucesso.', 'Alterações salvas');
-        $this->redirect('/');
+        try {
+            $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
+            $this->redirect('/');
+        } catch (\PDOException $exception) {
+            $this->renderFormWithErrors('Editar Livro', '/livros/atualizar/' . $id, $data, [
+                'Não foi possível atualizar o livro no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function destroy($id)
     {
-        $this->livro->remove((int) $id);
-        $this->flash('success', 'Livro excluído com sucesso.', 'Exclusão concluída');
-        $this->redirect('/');
+        try {
+            $this->livro->remove((int) $id);
+            $this->redirect('/');
+        } catch (\PDOException $exception) {
+            $this->renderIndex([
+                'Não foi possível excluir o livro no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     private function getPostData(): array
@@ -220,6 +233,15 @@ class LivroController extends Controller
             'assuntos' => $this->assunto->getAll(),
             'selectedAutores' => [],
             'selectedAssuntos' => [],
+            'errors' => $errors,
+        ]);
+    }
+
+    private function renderIndex(array $errors = []): void
+    {
+        $this->view('pages/livros/index.html.twig', [
+            'livros' => $this->livro->getAll(),
+            'title' => 'Livros Cadastrados',
             'errors' => $errors,
         ]);
     }

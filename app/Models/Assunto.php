@@ -45,15 +45,14 @@ class Assunto extends Model
         return (int) $stmt->fetchColumn();
     }
 
-    public function hasRelatedBooks(int $id): bool
-    {
-        return $this->getRelatedBookCount($id) > 0;
-    }
-
     public function remove($id)
     {
-        if ($this->hasRelatedBooks((int) $id)) {
-            throw new \DomainException('Não é possível excluir este assunto porque existem livros relacionados.');
+        $relatedBookCount = $this->getRelatedBookCount((int) $id);
+
+        if ($relatedBookCount > 0) {
+            $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
+
+            throw new \DomainException('Não é possível excluir este assunto porque existem ' . $label . '.');
         }
 
         return $this->delete($id);

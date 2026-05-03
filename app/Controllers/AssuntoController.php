@@ -42,9 +42,14 @@ class AssuntoController extends Controller
             return;
         }
 
-        $this->assunto->save($data);
-        $this->flash('success', 'Assunto cadastrado com sucesso.', 'Cadastro concluído');
-        $this->redirect('/assuntos/cadastrar');
+        try {
+            $this->assunto->save($data);
+            $this->redirect('/assuntos/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Assunto', '/assuntos', $data, [
+                'Não foi possível salvar o assunto no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function update($id)
@@ -58,28 +63,27 @@ class AssuntoController extends Controller
             return;
         }
 
-        $this->assunto->save($data);
-        $this->flash('success', 'Assunto atualizado com sucesso.', 'Alterações salvas');
-        $this->redirect('/assuntos/cadastrar');
+        try {
+            $this->assunto->save($data);
+            $this->redirect('/assuntos/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Editar Assunto', '/assuntos/atualizar/' . $id, $data, [
+                'Não foi possível atualizar o assunto no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function delete($id)
     {
-        $id = (int) $id;
-        $relatedBookCount = $this->assunto->getRelatedBookCount($id);
-
-        if ($relatedBookCount > 0) {
-            $this->flash('error', $this->buildDeleteBlockedMessage($relatedBookCount), 'Exclusão não permitida');
-            $this->redirect('/assuntos/cadastrar');
-        }
-
         try {
-            $this->assunto->remove($id);
-            $this->flash('success', 'Assunto excluído com sucesso.', 'Exclusão concluída');
+            $this->assunto->remove((int) $id);
             $this->redirect('/assuntos/cadastrar');
         } catch (\DomainException $exception) {
-            $this->flash('error', $exception->getMessage(), 'Exclusão não permitida');
-            $this->redirect('/assuntos/cadastrar');
+            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [$exception->getMessage()]);
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [
+                'Não foi possível excluir o assunto no banco de dados. Tente novamente.',
+            ]);
         }
     }
 
@@ -101,13 +105,6 @@ class AssuntoController extends Controller
         }
 
         return $errors;
-    }
-
-    private function buildDeleteBlockedMessage(int $relatedBookCount): string
-    {
-        $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
-
-        return 'Não é possível excluir este assunto porque existem ' . $label . '.';
     }
 
     private function renderForm(string $title, string $action, ?array $assunto = null, array $errors = []): void

@@ -30,9 +30,14 @@ class AutorController extends Controller
             return;
         }
 
-        $this->autor->save($data);
-        $this->flash('success', 'Autor cadastrado com sucesso.', 'Cadastro concluído');
-        $this->redirect('/autores/cadastrar');
+        try {
+            $this->autor->save($data);
+            $this->redirect('/autores/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Autor', '/autores', $data, [
+                'Não foi possível salvar o autor no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function edit($id)
@@ -58,28 +63,27 @@ class AutorController extends Controller
             return;
         }
 
-        $this->autor->save($data);
-        $this->flash('success', 'Autor atualizado com sucesso.', 'Alterações salvas');
-        $this->redirect('/autores/cadastrar');
+        try {
+            $this->autor->save($data);
+            $this->redirect('/autores/cadastrar');
+        } catch (\PDOException $exception) {
+            $this->renderForm('Editar Autor', '/autores/atualizar/' . $id, $data, [
+                'Não foi possível atualizar o autor no banco de dados. Tente novamente.',
+            ]);
+        }
     }
 
     public function delete($id)
     {
-        $id = (int) $id;
-        $relatedBookCount = $this->autor->getRelatedBookCount($id);
-
-        if ($relatedBookCount > 0) {
-            $this->flash('error', $this->buildDeleteBlockedMessage($relatedBookCount), 'Exclusão não permitida');
-            $this->redirect('/autores/cadastrar');
-        }
-
         try {
-            $this->autor->remove($id);
-            $this->flash('success', 'Autor excluído com sucesso.', 'Exclusão concluída');
+            $this->autor->remove((int) $id);
             $this->redirect('/autores/cadastrar');
         } catch (\DomainException $exception) {
-            $this->flash('error', $exception->getMessage(), 'Exclusão não permitida');
-            $this->redirect('/autores/cadastrar');
+            $this->renderForm('Cadastrar Autor', '/autores', null, [$exception->getMessage()]);
+        } catch (\PDOException $exception) {
+            $this->renderForm('Cadastrar Autor', '/autores', null, [
+                'Não foi possível excluir o autor no banco de dados. Tente novamente.',
+            ]);
         }
     }
 
@@ -101,13 +105,6 @@ class AutorController extends Controller
         }
 
         return $errors;
-    }
-
-    private function buildDeleteBlockedMessage(int $relatedBookCount): string
-    {
-        $label = $relatedBookCount === 1 ? '1 livro relacionado' : $relatedBookCount . ' livros relacionados';
-
-        return 'Não é possível excluir este autor porque existem ' . $label . '.';
     }
 
     private function renderForm(string $title, string $action, ?array $autor = null, array $errors = []): void

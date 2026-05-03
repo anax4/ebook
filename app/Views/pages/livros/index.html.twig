@@ -29,6 +29,16 @@
         <h1 class="mt-2 font-display text-3xl text-ink sm:text-4xl">Livros cadastrados</h1>
     </div>
 
+    {% if errors is defined and errors is not empty %}
+    <div class="mx-5 mt-5 rounded-[1.5rem] border border-danger/20 bg-danger/5 p-4 sm:mx-6">
+        <ul class="list-inside list-disc space-y-1 text-sm text-danger">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     {% if livros is empty %}
     <div class="p-8 text-center sm:p-12">
         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-16 w-16 text-primary/35" fill="none" viewBox="0 0 24 24" stroke="currentColor">
