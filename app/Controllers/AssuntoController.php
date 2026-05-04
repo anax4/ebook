@@ -44,6 +44,7 @@ class AssuntoController extends Controller
 
         try {
             $this->assunto->save($data);
+            $this->flash('success', 'Assunto cadastrado com sucesso.');
             $this->redirect('/assuntos/cadastrar');
         } catch (\PDOException $exception) {
             $this->renderForm('Cadastrar Assunto', '/assuntos', $data, [
@@ -65,6 +66,7 @@ class AssuntoController extends Controller
 
         try {
             $this->assunto->save($data);
+            $this->flash('success', 'Assunto atualizado com sucesso.');
             $this->redirect('/assuntos/cadastrar');
         } catch (\PDOException $exception) {
             $this->renderForm('Editar Assunto', '/assuntos/atualizar/' . $id, $data, [
@@ -77,13 +79,14 @@ class AssuntoController extends Controller
     {
         try {
             $this->assunto->remove((int) $id);
+            $this->flash('success', 'Assunto excluído com sucesso.');
             $this->redirect('/assuntos/cadastrar');
         } catch (\DomainException $exception) {
-            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [$exception->getMessage()]);
+            $this->flash('error', $exception->getMessage(), 'Não foi possível excluir');
+            $this->redirect('/assuntos/cadastrar');
         } catch (\PDOException $exception) {
-            $this->renderForm('Cadastrar Assunto', '/assuntos', null, [
-                'Não foi possível excluir o assunto no banco de dados. Tente novamente.',
-            ]);
+            $this->flash('error', 'Não foi possível excluir o assunto no banco de dados. Tente novamente.');
+            $this->redirect('/assuntos/cadastrar');
         }
     }
 

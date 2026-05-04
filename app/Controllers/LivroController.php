@@ -43,6 +43,7 @@ class LivroController extends Controller
 
         try {
             $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
+            $this->flash('success', 'Livro cadastrado com sucesso.');
             $this->redirect('/livros/cadastrar');
         } catch (\PDOException $exception) {
             $this->renderFormWithErrors('Cadastrar Livro', '/livros', $data, [
@@ -86,6 +87,7 @@ class LivroController extends Controller
 
         try {
             $this->livro->saveWithRelations($data, $data['autor_ids'], $data['assunto_ids']);
+            $this->flash('success', 'Livro atualizado com sucesso.');
             $this->redirect('/');
         } catch (\PDOException $exception) {
             $this->renderFormWithErrors('Editar Livro', '/livros/atualizar/' . $id, $data, [
@@ -98,11 +100,11 @@ class LivroController extends Controller
     {
         try {
             $this->livro->remove((int) $id);
+            $this->flash('success', 'Livro excluído com sucesso.');
             $this->redirect('/');
         } catch (\PDOException $exception) {
-            $this->renderIndex([
-                'Não foi possível excluir o livro no banco de dados. Tente novamente.',
-            ]);
+            $this->flash('error', 'Não foi possível excluir o livro no banco de dados. Tente novamente.');
+            $this->redirect('/');
         }
     }
 
